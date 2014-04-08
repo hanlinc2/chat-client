@@ -11,14 +11,14 @@ import (
 /* echo it back */
 func Echo(sock *websocket.Conn) {
   fmt.Println("echo conn on page <" + sock.LocalAddr().String() +
-              ".html> from <" +  sock.RemoteAddr().String() + ">")
+              ".html> from <" +  sock.Request().RemoteAddr + ">")
   io.Copy(sock, sock)
 }
 
 /* parse the command */
 func parseCommand(sock *websocket.Conn) {
-  fmt.Println("conn on page <" + sock.LocalAddr().String() +
-              ".html> from <" +  sock.RemoteAddr().String() + ">")
+  fmt.Println("user connected on page <" + sock.LocalAddr().String() +
+              ".html> from <" +  sock.Request().RemoteAddr + ">")
   /* array of bytes for a buffer */
   buf := make([]byte, 1024)
   /* read, error check */
