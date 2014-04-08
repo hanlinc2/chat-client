@@ -33,11 +33,15 @@ func parseCommand(sock *websocket.Conn) {
 }
 
 func main() {
+  /* add files to be handled */
   http.Handle("/", http.FileServer(http.Dir("./html/")))
 
+  /* pass functions which handle the different websockets
+    /echo referse to   ws://localhost:8787/echo   not http://localhost:8787/echo */
   http.Handle("/echo", websocket.Handler(Echo))
   http.Handle("/chat", websocket.Handler(parseCommand))
 
+  /* listen on port 8787 */
   err := http.ListenAndServe(":8787", nil)
 
   if err != nil {

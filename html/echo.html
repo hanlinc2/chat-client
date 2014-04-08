@@ -7,29 +7,38 @@
 <script type="text/javascript">
   /* websockt url */
   var wsuri = "ws://localhost:8787/echo"
+
+  /* websocket obj */
   var websocket = new WebSocket(wsuri);
+  /* pass function handlers to the websock obj
   websocket.onmessage = function(evt) { onMessage(evt) };
   websocket.onerror = function(evt) { onError(evt) };
+
   /* send/recv div for writing messages */
   var sent, received;
 
+  /* get the elements to append messages on received */
   function init()
   {
     sent = document.getElementById("said");
     received = document.getElementById("heard")
   }
 
+  /* on receiving a message from the socket, write to received column */
   function onMessage(evt)
   {
     writeTo("RCVD: " + evt.data, received)
   }
 
+  /* error handling */
   function onError(evt)
   {
     writeTo('<span style="color: red; font: 20;">ERROR:</span> ' + evt.data,
            document.getElementById("main"));
   }
 
+  /* function to send on button press; get value from text box, send to socket
+                                       append to sent element */
   function send()
   {
     var message = document.getElementById('message').value;
@@ -37,14 +46,16 @@
     writeTo("SENT: " + message, sent); 
   }
 
-  function writeTo(message, div)
+  /* appends <message> to element <elem> of type div */
+  function writeTo(message, elem)
   {
     var pre = document.createElement("div");
     pre.style.wordWrap = "break-word";
     pre.innerHTML = message;
-    div.appendChild(pre);
+    elem.appendChild(pre);
   }
 
+  /* run init on laod */
   window.addEventListener("load", init, false);
 
 </script>
