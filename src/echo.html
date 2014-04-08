@@ -1,51 +1,48 @@
-<html>
-<head></head>
-<body>
+<!DOCTYPE html>
+
+<meta charset="utf-8" />
+
+<title>Echo Client</title>
+
 <script type="text/javascript">
   /* websockt url */
   var wsuri = "ws://localhost:8787/echo"
-  /* output div for writing messages */
-  var output;
+  var websocket = new WebSocket(wsuri);
+  websocket.onmessage = function(evt) { onMessage(evt) };
+  websocket.onerror = function(evt) { onError(evt) };
+  /* send/recv div for writing messages */
+  var sent, received;
 
   function init()
   {
-    output = document.getElementById("echo");
-    testWebSocket();
-  }
-
-  function testWebSocket()
-  {
-    websocket = new WebSocket(wsUri);
-    websocket.onmessage = function(evt) { onMessage(evt) };
-    websocket.onerror = function(evt) { onError(evt) };
+    sent = document.getElementById("said");
+    received = document.getElementById("heard")
   }
 
   function onMessage(evt)
   {
-    var pre = document.createElement("div");
-    pre.style.wordWrap = "break-word";
-    pre.innerHTML = "RCVD: " + evt.data;
-    output.appendChild(pre);
+    writeTo("RCVD: " + evt.data, received)
   }
 
   function onError(evt)
   {
-    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+    writeTo('<span style="color: red; font: 20;">ERROR:</span> ' + evt.data,
+           document.getElementById("main"));
   }
 
-  function send(message)
+  function send()
   {
     var message = document.getElementById('message').value;
-    writeToScreen("SENT: " + message); 
     websocket.send(message);
+    writeTo("SENT: " + message, sent); 
   }
 
-  function writeToScreen(message)
+  function writeTo(message, div)
   {
     var pre = document.createElement("div");
     pre.style.wordWrap = "break-word";
     pre.innerHTML = message;
-    output.appendChild(pre);
+    div.appendChild(pre);
   }
 
   window.addEventListener("load", init, false);
@@ -57,8 +54,9 @@
 <div id="main">
   <input id="message" type="text">
     <button onclick="send();">Send Message</button></div>
-<div id="echo"></div>
-</html>  
+<div id="chat" style="float: left; margin: 0 auto; width: 600px;">
+  <div id="said"  style="padding: 5px; width: 288px; float:  left; border: solid #CC00CC; border-width: 1px;"></div>
+  <div id="heard" style="padding: 5px; width: 288px; float: right; border: solid #0000CC; border-width: 1px;"></div>
+</div>
 
-</body>
 </html>

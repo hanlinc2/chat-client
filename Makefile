@@ -36,12 +36,13 @@ run: serve bots chat
 chat: open-page
 
 # opens a new webpage to target
-open-page:
+open-page: 
 	sleep 1
-	# copy the html file to the same location
-	cp $(SRC)$(TARGET) $(BIN)
+	# copy the html files to the same location
+	cp $(SRC)*.html $(BIN)
 	$(FIREFOX) "$(LHOST)/$(TARGET)"
 	#$(CHROME) "$(LHOST)/$(TARGET)"
+
 
 # spawn a bunch of bots to populate the room
 bots:
@@ -68,7 +69,7 @@ build-server: clean-server
 # clear twice to clean screen
 clean-server:
 	mkdir -p $(BIN)
-	rm -f *.exe *.html
+	rm -f $(BIN)*.exe $(BIN)*.html
 	clear
 
 # installs golang and murciral to user the websocket
@@ -77,8 +78,9 @@ try: install serve test
 install:
 	# install golang and mercurial
 	sudo apt-get install golang mercurial
-	mkdir $$HOME/go
+	mkdir -p $$HOME/go
 	# get websock package
+	export GOPATH=\$$HOME/go
 	go get code.google.com/p/go.net/websocket
 
 

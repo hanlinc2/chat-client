@@ -10,7 +10,8 @@ import (
 
 /* echo it back */
 func Echo(sock *websocket.Conn) {
-  fmt.Println("echo for sock:", sock)
+  fmt.Println("echo conn on page <" + sock.LocalAddr().String() +
+              ".html> from <" +  sock.RemoteAddr().String() + ">")
   io.Copy(sock, sock)
 }
 
