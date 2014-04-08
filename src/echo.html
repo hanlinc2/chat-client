@@ -1,0 +1,64 @@
+<html>
+<head></head>
+<body>
+<script type="text/javascript">
+  /* websockt url */
+  var wsuri = "ws://localhost:8787/echo"
+  /* output div for writing messages */
+  var output;
+
+  function init()
+  {
+    output = document.getElementById("echo");
+    testWebSocket();
+  }
+
+  function testWebSocket()
+  {
+    websocket = new WebSocket(wsUri);
+    websocket.onmessage = function(evt) { onMessage(evt) };
+    websocket.onerror = function(evt) { onError(evt) };
+  }
+
+  function onMessage(evt)
+  {
+    var pre = document.createElement("div");
+    pre.style.wordWrap = "break-word";
+    pre.innerHTML = "RCVD: " + evt.data;
+    output.appendChild(pre);
+  }
+
+  function onError(evt)
+  {
+    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+  }
+
+  function send(message)
+  {
+    var message = document.getElementById('message').value;
+    writeToScreen("SENT: " + message); 
+    websocket.send(message);
+  }
+
+  function writeToScreen(message)
+  {
+    var pre = document.createElement("div");
+    pre.style.wordWrap = "break-word";
+    pre.innerHTML = message;
+    output.appendChild(pre);
+  }
+
+  window.addEventListener("load", init, false);
+
+</script>
+
+<h2>WebSocket Echo</h2>
+
+<div id="main">
+  <input id="message" type="text">
+    <button onclick="send();">Send Message</button></div>
+<div id="echo"></div>
+</html>  
+
+</body>
+</html>
