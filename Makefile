@@ -1,6 +1,5 @@
 # folders
-SRC=src/
-BIN=bin/
+SERVSRC=server/
 
 # base filename for go
 SERVER=websock
@@ -39,7 +38,7 @@ chat: open-page
 open-page: 
 	sleep 1
 	# copy the html files to the same location
-	cp $(SRC)*.html $(BIN)
+	# cp $(SRC)*.html $(BIN)
 	$(FIREFOX) "$(LHOST)/$(TARGET)"
 	#$(CHROME) "$(LHOST)/$(TARGET)"
 
@@ -59,39 +58,45 @@ test: run
 # server scripts
 # opens server in a new terminal
 serve: build-server
-	cd $(BIN); $(TERMINAL) "bash -c ./$(SERVER).exe;bash"
+	$(TERMINAL) "bash -c ./$(SERVER).exe;bash"
 
 # build the files and move them to bin
 build-server: clean-server
-	$(GOCC) -o $(BIN)$(SERVER).exe $(SRC)$(SERVER).go
+	$(GOCC) -o $(SERVER).exe $(SERVSRC)$(SERVER).go
 
 # make a bin folder (ignore errors) and remove run file (ignore if not there)
 # clear twice to clean screen
 clean-server:
-	mkdir -p $(BIN)
-	rm -f $(BIN)*.exe $(BIN)*.html
+	rm -f $(SERVER).exe
 	clear
 
 # installs golang and murciral to user the websocket
 try: install serve test
 
-install:
+install: go-hg resolve-path
+
+go-hg:
 	# install golang and mercurial
 	sudo apt-get install golang mercurial
 	mkdir -p $$HOME/go
-	# get websock package
-	export GOPATH=\$$HOME/go
-	go get code.google.com/p/go.net/websocket
 
+resolve-path:
+	# append path updates to your bashrc
+	sudo echo "export GOPATH=\$$HOME/go" >> ~/.bashrc
+	sudo echo "export PATH=\$$PATH:\$$GOPATH/bin" >> ~/.bashrc
+	# demand notification
+	@echo "\033[7m\033[1myou must reopen terminal then run 'make get-websock'\033[0m"
+	@echo "hit enter..."
+	@read foo;
+
+get-websock:
+	# get websock package
+	go get code.google.com/p/go.net/websocket
 
 # prints a bit of help
 help:
 	clear
-	@echo "to clear up the build issue (websocket not in gopath), enter:"
-	@echo "export GOPATH=\$$HOME/go"
-	@echo "export PATH=\$$PATH:\$$GOPATH/bin"
-	@echo ""
-	@echo "try 'make install' to install golang and websocket so you can compile the websocket"
+	@echo "try 'make install' to install golang and then follow instructions to install websocket so you can compile the websocket"
 	@echo "'make'          -- starts everything (executes first target)"
 	@echo "'make echo'     -- opens up an echo page (stolen from internet)"
 	@echo "'make server'   -- opens server in a new terminal"

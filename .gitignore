@@ -24,4 +24,7 @@ _testmain.go
 *.exe
 *.test
 
+# ignore vim temp files
+*.swp
+
 

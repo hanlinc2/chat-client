@@ -33,7 +33,7 @@ func parseCommand(sock *websocket.Conn) {
 }
 
 func main() {
-  http.Handle("/", http.FileServer(http.Dir(".")))
+  http.Handle("/", http.FileServer(http.Dir("./html/")))
 
   http.Handle("/echo", websocket.Handler(Echo))
   http.Handle("/chat", websocket.Handler(parseCommand))
