@@ -51,6 +51,7 @@ func parseCommand(sock *websocket.Conn) {
     /* trim off the command then trim out the spaces, username is left */
     if !strings.HasPrefix(line, "ME IS") {
       writeToBuf("ERROR invalid: must login first\n", writer)
+      continue
     }
     line = strings.TrimPrefix(line, "ME IS")
     username = strings.TrimSpace(line)
@@ -67,6 +68,7 @@ func parseCommand(sock *websocket.Conn) {
       logged_in = true
       writeToBuf("OK user logged in\n", writer)
     }
+    /* loop back again */
   }
   /* loop until disconnect/logout */
   for logged_in {
@@ -145,6 +147,7 @@ func parseCommand(sock *websocket.Conn) {
     } else {
       writeToBuf("ERROR invalid command\n", writer)
     }
+    /* re loop for next read */
   }
   sock.Close()
   fmt.Println("Closed socket " + sock.Request().RemoteAddr)

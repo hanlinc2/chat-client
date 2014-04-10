@@ -9,7 +9,7 @@ GOCC=go build
 TERMINAL=gnome-terminal -e 
 
 # firefox/chrome new windows
-FIREFOX=firefox -jconsole -new-window
+FIREFOX=firefox -new-window -jconsole 
 CHROME=google-chrome -new-window
 
 # localhost http address
