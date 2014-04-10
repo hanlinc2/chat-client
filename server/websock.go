@@ -65,7 +65,7 @@ func parseCommand(sock *websocket.Conn) {
     } else {
       users[username] = writer
       logged_in = true
-      writeToBuf("OK\n", writer)
+      writeToBuf("OK user logged in\n", writer)
       break /* end the loop on succesful login */
     }
   }
@@ -79,6 +79,7 @@ func parseCommand(sock *websocket.Conn) {
 
     /* parse through options;
        trim prefix, get username, process command */
+    /* list all users connected */
     if strings.HasPrefix(line, "WHO HERE") {
       line = strings.TrimPrefix(line, "WHO HERE")
       in_name := strings.TrimSpace(line)
@@ -92,11 +93,13 @@ func parseCommand(sock *websocket.Conn) {
       }
       writer.Flush()
 
+    /* send to all users */
     } else if strings.HasPrefix(line, "BROADCAST") {
       line = strings.TrimPrefix(line, "BROADCAST")
       in_name := strings.TrimSpace(line)
       if in_name != username {
         writeToBuf("ERROR name with command mismatch\n", writer)
+        continue
       }
 
       /* get size of bytes */
@@ -107,6 +110,7 @@ func parseCommand(sock *websocket.Conn) {
       size, err := strconv.Atoi(strings.TrimSpace(line))
       if size == 0 || err != nil {
         writeToBuf("ERROR invalid message size\n", writer)
+        continue
       }
 
       buf := make([]byte, size)
@@ -122,17 +126,32 @@ func parseCommand(sock *websocket.Conn) {
         writeToBuf(string(buf), b_out)
       }
 
+    /* logout user */
+    } else if strings.HasPrefix(line, "LOGOUT") {
+      line = strings.TrimPrefix(line, "LOGOUT")
+      in_name := strings.TrimSpace(line)
+      if in_name != username {
+        writeToBuf("ERROR invalid logout request\n", writer)
+        continue
+      }
+      /* remove from map and close socket */
+      delete(users, username)
+      writeToBuf("OK user logged out\n", writer)
+      logged_in = false
+
+    /* cant log in again */
     } else if strings.HasPrefix(line, "ME IS") {
       writeToBuf("ERROR already logged in on this connection\n", writer)
+    /* not a valid command */
     } else {
       writeToBuf("ERROR invalid command\n", writer)
     }
-
   }
   sock.Close()
   fmt.Println("Closed socket " + sock.Request().RemoteAddr)
 }
 
+/* server main func */
 func main() {
   /* add files to be handled */
   http.Handle("/", http.FileServer(http.Dir("./html/")))
