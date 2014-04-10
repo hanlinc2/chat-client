@@ -41,12 +41,12 @@ func parseCommand(sock *websocket.Conn) {
   var logged_in = false
 
   /* loop until login */
-  for {
+  for !logged_in {
     /* block until a line is read */
     line, err := reader.ReadString('\n')
     /* if socket closed return from thread */
     if closed_sock(err) {
-      return
+      break
     }
     /* trim off the command then trim out the spaces, username is left */
     if !strings.HasPrefix(line, "ME IS") {
@@ -66,7 +66,6 @@ func parseCommand(sock *websocket.Conn) {
       users[username] = writer
       logged_in = true
       writeToBuf("OK user logged in\n", writer)
-      break /* end the loop on succesful login */
     }
   }
   /* loop until disconnect/logout */
@@ -197,5 +196,3 @@ func ping(sock *websocket.Conn) {
   }
   sock.Close()
 }
-
-
