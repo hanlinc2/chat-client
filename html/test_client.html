@@ -5,8 +5,10 @@
 <title>WebSocket Test</title>
 
 <script language="javascript" type="text/javascript">
-
-  var wsUri = "ws://localhost:8787/echo";
+  /* connects, sends a messsage, then disconects from the socket */
+  /* websockt url */
+  var wsUri = "ws://localhost:8787/chat";
+  /* output div for writing messages */
   var output;
 
   function init()
@@ -27,7 +29,9 @@
   function onOpen(evt)
   {
     writeToScreen("CONNECTED");
-    doSend("WebSocket test");
+    doSend("ME IS brandon\n");
+    doSend("WHO HERE brandon\n");
+    doSend("BROADCAST brandon\n6\nhello!")
   }
 
   function onClose(evt)
@@ -38,7 +42,7 @@
   function onMessage(evt)
   {
     writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-    websocket.close();
+    //websocket.close();
   }
 
   function onError(evt)

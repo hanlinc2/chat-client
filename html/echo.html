@@ -10,7 +10,7 @@
 
   /* websocket obj */
   var websocket = new WebSocket(wsuri);
-  /* pass function handlers to the websock obj
+  /* pass function handlers to the websock obj */
   websocket.onmessage = function(evt) { onMessage(evt) };
   websocket.onerror = function(evt) { onError(evt) };
 

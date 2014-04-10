@@ -9,7 +9,7 @@ GOCC=go build
 TERMINAL=gnome-terminal -e 
 
 # firefox/chrome new windows
-FIREFOX=firefox -new-window
+FIREFOX=firefox -jconsole -new-window
 CHROME=google-chrome -new-window
 
 # localhost http address
@@ -29,7 +29,7 @@ TESTHTML=test_client.html
 TCLIENT="test_client.html"
 
 # open the server first, then the chat
-run: serve bots chat
+run: server bots chat
 
 # open chat
 chat: open-page
@@ -57,7 +57,7 @@ test: run
 
 # server scripts
 # opens server in a new terminal
-serve: build-server
+server: build-server
 	$(TERMINAL) "bash -c ./$(SERVER).exe;bash"
 
 # build the files and move them to bin
@@ -71,9 +71,7 @@ clean-server:
 	clear
 
 # installs golang and murciral to user the websocket
-try: install serve test
-
-install: go-hg resolve-path
+setup-ubuntu: go-hg resolve-path
 
 go-hg:
 	# install golang and mercurial
@@ -96,7 +94,7 @@ get-websock:
 # prints a bit of help
 help:
 	clear
-	@echo "try 'make install' to install golang and then follow instructions to install websocket so you can compile the websocket"
+	@echo "try 'make setup-ubuntu' to install golang and then follow instructions to install websocket so you can compile the websocket"
 	@echo "'make'          -- starts everything (executes first target)"
 	@echo "'make echo'     -- opens up an echo page (stolen from internet)"
 	@echo "'make server'   -- opens server in a new terminal"
