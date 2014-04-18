@@ -31,7 +31,7 @@ func writeToBuf(message string, w *bufio.Writer) {
 
 func parseCommand(sock *websocket.Conn) {
   fmt.Println("user connected on page <" + sock.LocalAddr().String() +
-              ".html> from <" +  sock.Request().RemoteAddr + ">")
+              "> from <" +  sock.Request().RemoteAddr + ">")
 
   reader := bufio.NewReader(sock)
   writer := bufio.NewWriter(sock)
@@ -124,7 +124,7 @@ func parseCommand(sock *websocket.Conn) {
 
       /* write to all users */
       for _, b_out := range users {
-        writeToBuf(string(buf), b_out)
+        writeToBuf("FROM " + username + "\n" + line + string(buf), b_out)
       }
 
     /* logout user */
@@ -159,7 +159,7 @@ func main() {
   http.Handle("/", http.FileServer(http.Dir("./html/")))
 
   /* pass functions which handle the different websockets
-    /echo referse to   ws://localhost:8787/echo   not http://localhost:8787/echo */
+    /echo refers to ws://localhost:8787/echo not http://localhost:8787/echo */
   http.Handle("/echo", websocket.Handler(Echo))
   http.Handle("/ping", websocket.Handler(ping))
   http.Handle("/chat", websocket.Handler(parseCommand))

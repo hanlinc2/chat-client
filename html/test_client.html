@@ -2,89 +2,15 @@
 
 <meta charset="utf-8" />
 
+<head>
+<script src="/res/test_script.js"></script>
+</head>
+
 <title>WebSocket Test</title>
-
-<script language="javascript" type="text/javascript">
-  /* connects, sends a messsage, then disconects from the socket */
-  /* websockt url */
-  var wsUri = "ws://localhost:8787/chat";
-  var websocket = new WebSocket(wsUri);
-  /* output div for writing messages */
-  var stat, send, rcvd;
-
-  /* assign event handlers */
-  websocket.onopen = function(evt) { onOpen(evt) };
-  websocket.onclose = function(evt) { onClose(evt) };
-  websocket.onmessage = function(evt) { onMessage(evt) };
-  websocket.onerror = function(evt) { onError(evt) };
-
-  // TODO add send/rcvd messages to table dynamically rather than be divs
-
-  function init()
-  {
-    stat = document.getElementById("stat");
-    send = document.getElementById("send");
-    rcvd = document.getElementById("rcvd");
-    setTimeout(runTests, 2000);
-  }
-
-  function onOpen(evt)
-  {
-    addToDiv("CONNECTED", stat);
-  }
-
-  function onClose(evt)
-  {
-    addToDiv("DISCONNECTED", stat);
-  }
-
-  function onMessage(evt)
-  {
-    addToDiv('RCVD: ' + evt.data, rcvd);
-  }
-
-  function onError(evt)
-  {
-    addToDiv('<span style="color: red;">ERROR:</span> ' + evt.data, stat);
-  }
-
-  function doSend(message)
-  {
-    websocket.send(message);
-    addToDiv("SENT: " + message, send); 
-  }
-
-  function addToDiv(message, div)
-  {
-    var pre = document.createElement("div");
-    pre.style.wordWrap = "break-word";
-    pre.style.height = '48px';
-    pre.innerHTML = message;
-    div.appendChild(pre);
-  }
-
-  function runTests() {
-    doSend("BROADCAST brandon before login\n");
-    doSend("ME IS has space\n");
-    // TODO create new conn and try to login under same name
-    doSend("ME IS brandon\n");
-    doSend("ME IS already_logged_in\n");
-    doSend("BADCMD\n");
-    doSend("WHO HERE bad user\n");
-    doSend("WHO HERE brandon\n");
-    doSend("BROADCAST bad user\n")
-    doSend("BROADCAST brandon\n6\nhello!")
-    doSend("LOGOUT bad user\n");
-    doSend("LOGOUT brandon\n");
-  }
-
-  window.addEventListener("load", init, false);
-
-</script>
 
 <h2>WebSocket Test</h2>
 
-<div id="stat"></div>
+<div id="stat" style="width 600px; height 40px; padding 5px;">Status:</div>
 <div id="chat" style="float: left; margin: 0 auto; width: 600px;">
   <div id="send"  style="padding: 5px; width: 288px; float:  left; border: solid #CC00CC; border-width: 1px;"></div>
   <div id="rcvd" style="padding: 5px; width: 288px; float: right; border: solid #0000CC; border-width: 1px;"></div>
